@@ -89,7 +89,7 @@ dfApps = pd.concat([dfAppApple,dfAppGoogle]).reset_index(drop=True)
 startDate = str(st.date_input('Data Inicial'))
 endDate = str(st.date_input('Data Final'))
 
-appSelectMode = st.radio('Como deseja selecionar os aplicativos?', ('Todos os apps', 'Por loja', 'Personalizado'))
+appSelectMode = st.radio('Como deseja selecionar os aplicativos ?', ('Todos os apps', 'Por loja', 'Personalizado'))
 
 if appSelectMode == 'Todos os apps':
 	dfFilterApps = dfApps
