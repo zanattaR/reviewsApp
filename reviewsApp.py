@@ -30,6 +30,9 @@ def get_table_download_link(df):
 	return f'<a href="data:application/octet-stream;base64,{b64.decode()}" download="extract.xlsx">Download</a>'
 
 st.title('MVP - Reviews de múltiplos apps')
+st.write('Este MVP tem como objetivo possibilitar a exportação de dados de reviews múltiplos aplicativos ao mesmo tempo.')
+st.write('A ferramenta permite a seleção do período desejado, coleta de todos os aplicativos, por loja ou de forma personalizada, selecionando os aplicativos desejados')
+st.write("")
 
 ######### Requisição do token #########
 url = "https://api-gateway.apps.rmabeta.rankmyapp.com/api/users/authenticate"
@@ -200,6 +203,14 @@ if btn:
 				'Reply Text','Thumbs Up','Version','Criterias']
 
 	df_cols = df_cols[colsOrd]
+
+	###### Resumo do df
+	dfStats = dfFilterApps.merge(df_cols, how='left', left_on='appName',right_on='Name')
+	dfStatsFinal = dfStats[['appName','Text']].groupby('appName')['Text'].count().reset_index(name='Volume de Reviews')
+
+	st.subheader('Resumo')
+	st.write(dfStatsFinal)
+	st.subheader('Prévia da Planilha')
 	st.write(df_cols)
 	st.write('Clique em Download para baixar o arquivo')
 	st.markdown(get_table_download_link(df_cols), unsafe_allow_html=True)
