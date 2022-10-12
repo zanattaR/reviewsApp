@@ -160,6 +160,9 @@ if btn:
 	####### Normalização e Tratamento de dados
 	dfRevs = pd.DataFrame(list_resquests)
 
+	if dfRevs['total'] == 0:
+		st.warning('Não foram encontrados reviews para o período selecionado.')
+
 	explodedRev = dfRevs.explode('reviews')
 	df_exp_rev = pd.concat([explodedRev.reset_index(drop=True),
 		pd.json_normalize(explodedRev['reviews'])], axis=1)
