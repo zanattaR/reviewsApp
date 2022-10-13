@@ -39,10 +39,10 @@ url = "https://api-gateway.apps.rmabeta.rankmyapp.com/api/users/authenticate"
 
 payload = json.dumps({
   "name": "",
-  "email": st.secrets['tool_email'],
+  "email": 'giovanni.zanatta@rankmyapp.com.br',#st.secrets['tool_email'],
   "company": "",
   "occupation": "",
-  "password": st.secrets['tool_password']
+  "password": 'tool_giovanni' #st.secrets['tool_password']
 })
 headers = {
   'authority': 'api-gateway.apps.rmabeta.rankmyapp.com',
@@ -119,7 +119,9 @@ if appSelectMode == 'Personalizado':
 	FilterApps = list(zip(dfFilterApps['appId'],dfFilterApps['store']))
 
 # Visualização dos apps selecionados
-st.write(dfFilterApps)
+dfFilterApps_show = dfFilterApps.copy()
+dfFilterApps_show['App Name'] = dfFilterApps_show['appName'].str.split('(').str[0]
+st.write(dfFilterApps_show[['App Name', 'store']])
 
 #### Gerar Planilha
 btn = st.button('Gerar Planilha')
@@ -156,14 +158,13 @@ if btn:
 	if response.status_code == 400:
 		st.warning('O período selecionado é maior que 31 dias')
 
-		
+
 	####### Normalização e Tratamento de dados
 	dfRevs = pd.DataFrame(list_resquests)
 
 	if dfRevs['total'][0] == 0:
 		st.warning('Não foram encontrados reviews para o período selecionado.')
-	else:
-		
+	else:	
 
 		explodedRev = dfRevs.explode('reviews')
 		df_exp_rev = pd.concat([explodedRev.reset_index(drop=True),
@@ -213,6 +214,7 @@ if btn:
 		dfStats = dfFilterApps.merge(df_cols, how='left', left_on='appName',right_on='Name')
 		dfStatsFinal = dfStats[['appName','Text']].groupby('appName')['Text'].count().reset_index(name='Volume de Reviews')
 
+		df_cols['Name'] = df_cols['Name'].str.split('(').str[0]
 		st.subheader('Resumo')
 		st.write(dfStatsFinal)
 		st.subheader('Prévia da Planilha')
