@@ -153,72 +153,73 @@ if btn:
 
 		if response.status_code == 400:
 			st.warning('O período selecionado é maior que 31 dias')
-		else:    
-			list_resquests.append(response.json())
+		
+	        
+		list_resquests.append(response.json())
 
 
-		####### Normalização e Tratamento de dados
-		dfRevs = pd.DataFrame(list_resquests)
+	####### Normalização e Tratamento de dados
+	dfRevs = pd.DataFrame(list_resquests)
 
-		if dfRevs['total'][0] == 0:
-			st.warning('Não foram encontrados reviews para o período selecionado.')
-		else:
-			
+	if dfRevs['total'][0] == 0:
+		st.warning('Não foram encontrados reviews para o período selecionado.')
+	else:
+		
 
-			explodedRev = dfRevs.explode('reviews')
-			df_exp_rev = pd.concat([explodedRev.reset_index(drop=True),
-				pd.json_normalize(explodedRev['reviews'])], axis=1)
+		explodedRev = dfRevs.explode('reviews')
+		df_exp_rev = pd.concat([explodedRev.reset_index(drop=True),
+			pd.json_normalize(explodedRev['reviews'])], axis=1)
 
-			df_exp_rev = df_exp_rev.merge(dfApps, how='left', left_on=['appId','store'],right_on=['appId','store'])
-			df_exp_rev.dropna(subset='store', inplace=True)
+		df_exp_rev = df_exp_rev.merge(dfApps, how='left', left_on=['appId','store'],right_on=['appId','store'])
+		df_exp_rev.dropna(subset='store', inplace=True)
 
-			#df_exp_rev['store'].unique() == ['apple']
-			if 'apple' in set(df_exp_rev['store']):
-				df_exp_rev['lang'] = np.nan
-				df_exp_rev['thumbsUp'] = np.nan
-				df_exp_rev['criterias'] = np.nan
+		#df_exp_rev['store'].unique() == ['apple']
+		if 'apple' in set(df_exp_rev['store']):
+			df_exp_rev['lang'] = np.nan
+			df_exp_rev['thumbsUp'] = np.nan
+			df_exp_rev['criterias'] = np.nan
 
-			# Selecionando colunas necessárias
-			cols = ['appId','store','userName','date','score','title','text','category','subcategory','sentiment','lang',
-							'replyDate','replyTimeBusinessMinutes','replyText','thumbsUp','version','criterias','appName']
+		# Selecionando colunas necessárias
+		cols = ['appId','store','userName','date','score','title','text','category','subcategory','sentiment','lang',
+						'replyDate','replyTimeBusinessMinutes','replyText','thumbsUp','version','criterias','appName']
 
-			df_cols = df_exp_rev[cols]
+		df_cols = df_exp_rev[cols]
 
-			######### Tratamento do Df #########
-			# Separando Data e hora do review
-			df_cols['time'] = df_cols['date'].str.split('T').str[1]
-			df_cols['time'] = df_cols['time'].str.split('.').str[0]
-			df_cols['date'] = df_cols['date'].str.split('T').str[0]
+		######### Tratamento do Df #########
+		# Separando Data e hora do review
+		df_cols['time'] = df_cols['date'].str.split('T').str[1]
+		df_cols['time'] = df_cols['time'].str.split('.').str[0]
+		df_cols['date'] = df_cols['date'].str.split('T').str[0]
 
-			# Separando Data e hora da resposta
-			df_cols['replyTime'] = df_cols['replyDate'].str.split('T').str[1]
-			df_cols['replyTime'] = df_cols['replyTime'].str.split('.').str[0]
-			df_cols['replyDate'] = df_cols['replyDate'].str.split('T').str[0]
+		# Separando Data e hora da resposta
+		df_cols['replyTime'] = df_cols['replyDate'].str.split('T').str[1]
+		df_cols['replyTime'] = df_cols['replyTime'].str.split('.').str[0]
+		df_cols['replyDate'] = df_cols['replyDate'].str.split('T').str[0]
 
-			# Renomeando colunas
-			df_cols.rename(columns={'userName':'Username','date':'Date','score':'Rating','title':'Title','text':'Text','store':'Store',
-															'category':'Category','subcategory':'Subcategory','sentiment':'Sentiment','lang':'Location',
-															'replyDate':'Reply Date','replyText':'Reply Text','thumbsUp':'Thumbs Up','version':'Version',
-															'criterias':'Criterias','time':'Review Time','replyTime':'Reply Time','appName':'Name',
-															'replyTimeBusinessMinutes':'SLA Business Minutes'}, inplace=True)
+		# Renomeando colunas
+		df_cols.rename(columns={'userName':'Username','date':'Date','score':'Rating','title':'Title','text':'Text','store':'Store',
+														'category':'Category','subcategory':'Subcategory','sentiment':'Sentiment','lang':'Location',
+														'replyDate':'Reply Date','replyText':'Reply Text','thumbsUp':'Thumbs Up','version':'Version',
+														'criterias':'Criterias','time':'Review Time','replyTime':'Reply Time','appName':'Name',
+														'replyTimeBusinessMinutes':'SLA Business Minutes'}, inplace=True)
 
 
-			colsOrd = ['appId','Name','Store','Username','Date','Review Time','Rating','Title','Text','Category',
-						'Subcategory','Sentiment','Location','Reply Date','Reply Time','SLA Business Minutes',
-						'Reply Text','Thumbs Up','Version','Criterias']
+		colsOrd = ['appId','Name','Store','Username','Date','Review Time','Rating','Title','Text','Category',
+					'Subcategory','Sentiment','Location','Reply Date','Reply Time','SLA Business Minutes',
+					'Reply Text','Thumbs Up','Version','Criterias']
 
-			df_cols = df_cols[colsOrd]
+		df_cols = df_cols[colsOrd]
 
-			###### Resumo do df
-			dfStats = dfFilterApps.merge(df_cols, how='left', left_on='appName',right_on='Name')
-			dfStatsFinal = dfStats[['appName','Text']].groupby('appName')['Text'].count().reset_index(name='Volume de Reviews')
+		###### Resumo do df
+		dfStats = dfFilterApps.merge(df_cols, how='left', left_on='appName',right_on='Name')
+		dfStatsFinal = dfStats[['appName','Text']].groupby('appName')['Text'].count().reset_index(name='Volume de Reviews')
 
-			st.subheader('Resumo')
-			st.write(dfStatsFinal)
-			st.subheader('Prévia da Planilha')
-			st.write(df_cols)
-			st.write('Clique em Download para baixar o arquivo')
-			st.markdown(get_table_download_link(df_cols), unsafe_allow_html=True)
+		st.subheader('Resumo')
+		st.write(dfStatsFinal)
+		st.subheader('Prévia da Planilha')
+		st.write(df_cols)
+		st.write('Clique em Download para baixar o arquivo')
+		st.markdown(get_table_download_link(df_cols), unsafe_allow_html=True)
 
 
 
