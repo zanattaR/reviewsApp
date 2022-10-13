@@ -151,13 +151,12 @@ if btn:
 
 		response = requests.request("GET", url, headers=headers, data=payload)
 
-		if response.status_code == 400:
-			st.warning('O período selecionado é maior que 31 dias')
-		
-	        
 		list_resquests.append(response.json())
 
+	if response.status_code == 400:
+		st.warning('O período selecionado é maior que 31 dias')
 
+		
 	####### Normalização e Tratamento de dados
 	dfRevs = pd.DataFrame(list_resquests)
 
