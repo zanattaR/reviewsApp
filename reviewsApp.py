@@ -89,6 +89,7 @@ dfAppGoogle = pd.DataFrame({'appName':appNameGoogle, 'appId':appIdGoogle,'store'
 dfApps = pd.concat([dfAppApple,dfAppGoogle]).reset_index(drop=True)
 
 # Seleção de datas e apps
+st.write('Selecione um perído de até 31 dias')
 startDate = str(st.date_input('Data Inicial'))
 endDate = str(st.date_input('Data Final'))
 
@@ -157,6 +158,8 @@ if btn:
 
 	if response.status_code == 400:
 		st.warning('O período selecionado é maior que 31 dias')
+	if response.status_code == 504:
+		st.warning('Timeout: Diminua o período selecionado')
 
 
 	####### Normalização e Tratamento de dados
