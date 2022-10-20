@@ -182,6 +182,9 @@ if btn:
 			df_exp_rev['thumbsUp'] = np.nan
 			df_exp_rev['criterias'] = np.nan
 
+		if 'replyTimeBusinessMinutes' not in set(df_exp_rev.columns):
+			df_exp_rev['replyTimeBusinessMinutes'] = np.nan
+
 		# Selecionando colunas necessárias
 		cols = ['appId','store','userName','date','score','title','text','category','subcategory','sentiment','lang',
 						'replyDate','replyTimeBusinessMinutes','replyText','thumbsUp','version','criterias','appName']
