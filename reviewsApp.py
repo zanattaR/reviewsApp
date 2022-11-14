@@ -35,7 +35,7 @@ st.write('A ferramenta permite a seleção do período desejado, coleta de todos
 st.write("")
 
 ######### Requisição do token #########
-url = "https://api-gateway.apps.rmabeta.rankmyapp.com/api/users/authenticate"
+url = "https://gateway.rankmyapp.com/api/users/authenticate"
 
 payload = json.dumps({
   "name": "",
@@ -45,13 +45,13 @@ payload = json.dumps({
   "password": 'tool_giovanni' #st.secrets['tool_password']
 })
 headers = {
-  'authority': 'api-gateway.apps.rmabeta.rankmyapp.com',
+  'authority': 'api-gateway.apps.rankmyapp.com',
   'accept': 'application/json',
   'accept-language': 'en-GB,en;q=0.9,en-US;q=0.8',
   'authorization': 'Bearer null',
   'content-type': 'application/json',
-  'origin': 'https://tool.rmabeta.rankmyapp.com',
-  'referer': 'https://tool.rmabeta.rankmyapp.com/',
+  'origin': 'https://tool.rankmyapp.com',
+  'referer': 'https://tool.rankmyapp.com/',
   'sec-ch-ua': '"Chromium";v="106", "Microsoft Edge";v="106", "Not;A=Brand";v="99"',
   'sec-ch-ua-mobile': '?0',
   'sec-ch-ua-platform': '"Windows"',
