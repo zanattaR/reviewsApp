@@ -71,17 +71,19 @@ token = response.json()['token']
 ######### appIds e AppNames #########
 appNameApple = ['Itaú Cartões (apple)','Cartão Luiza (apple)','Hipercard (apple)','Credicard (apple)','Credicard On (apple)',
 								'Samsung Itaucard (apple)','Players Bank (apple)','Banco Itaú (apple)','Personnalité (apple)','íon Itaú (apple)',
-								'Rede (apple)','Itaú Empresas (apple)']
+								'Rede (apple)','Itaú Empresas (apple)','iti (apple)']
+
 appIdApple = ['com.itau.itaucard','com.itau.magalu','com.itau.hipercard','com.itau.credicard','com.odete.credicard',
               'com.odete.samsung','com.odete.playersbank','com.itau.iphone.varejo','com.itau.iphone.personnalite',
-              'com.itau.investimentos','br.com.userede.rede','com.itau.empresa']
+              'com.itau.investimentos','br.com.userede.rede','com.itau.empresa','com.itau.iti']
 
 appNameGoogle = ['Itaú Cartões (google)','Cartão Luiza (google)','Hipercard (google)','Credicard (google)',
                  'Credicard On (google)','Samsung Itaucard (google)','Players Bank (google)','Banco Itaú (google)',
-                 'Personnalité (google)','íon Itaú (google)','Rede (google)','Itaú Empresas (google)']
+                 'Personnalité (google)','íon Itaú (google)','Rede (google)','Itaú Empresas (google)','iti (google)']
+
 appIdGoogle = ['com.itaucard.activity','com.luizalabs.mlapp','com.hipercard.app','com.credicard.app','com.odete.credicard',
                'com.odete.samsung','com.odete.playersbank','com.itau','com.itau.pers','com.itau.investimentos',
-               'br.com.userede','com.itau.empresas']
+               'br.com.userede','com.itau.empresas','com.itau.iti']
 
 dfAppApple = pd.DataFrame({'appName':appNameApple, 'appId':appIdApple,'store':'apple'})
 dfAppGoogle = pd.DataFrame({'appName':appNameGoogle, 'appId':appIdGoogle,'store':'google'})
