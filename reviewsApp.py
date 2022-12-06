@@ -39,10 +39,10 @@ url = "https://gateway.rankmyapp.com/api/users/authenticate"
 
 payload = json.dumps({
   "name": "",
-  "email": 'giovanni.zanatta@rankmyapp.com.br',#st.secrets['tool_email'],
+  "email": 'patrick.gomes@rankmyapp.com.br',#st.secrets['tool_email'],
   "company": "",
   "occupation": "",
-  "password": 'tool_giovanni' #st.secrets['tool_password']
+  "password": 'Patrick15@' #st.secrets['tool_password']
 })
 headers = {
   'authority': 'api-gateway.apps.rankmyapp.com',
