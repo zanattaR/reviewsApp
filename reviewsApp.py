@@ -35,8 +35,8 @@ st.write('A ferramenta permite a seleção do período desejado, coleta de todos
 st.write("")
 
 ######### Requisição do token #########
-url = "https://gateway.rankmyapp.com/api/users/authenticate"
-
+#url = "https://gateway.rankmyapp.com/api/users/authenticate"
+url = "https://api.rankmyapp.com/auth/auth/signin"
 payload = json.dumps({
   "name": "",
   "email": 'patrick.gomes@rankmyapp.com.br',#st.secrets['tool_email'],
