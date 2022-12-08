@@ -17,8 +17,13 @@ warnings.warn = ignore_warn
 # Função para transformar df em excel
 def to_excel(df):
 	output = BytesIO()
-	writer = pd.ExcelWriter(output, engine='xlsxwriter')
-	df.to_excel(writer, sheet_name='Planilha1',index=False)
+
+	grouped_df = df.groupby('Name')
+	with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
+		for group in grouped_df.groups:
+			grouped_df.get_group(group).to_excel(writer, sheet_name=group)
+	
+	#df.to_excel(writer, sheet_name='Planilha1',index=False)
 	writer.save()
 	processed_data = output.getvalue()
 	return processed_data
@@ -39,10 +44,10 @@ st.write("")
 url = "https://api.rankmyapp.com/auth/auth/signin"
 payload = json.dumps({
   "name": "",
-  "email": 'patrick.gomes@rankmyapp.com.br',#st.secrets['tool_email'],
+  "email": 'joao.souza@rankmyapp.com.br',#st.secrets['tool_email'],
   "company": "",
   "occupation": "",
-  "password": 'Patrick15@' #st.secrets['tool_password']
+  "password": 'JVictor@00' #st.secrets['tool_password']
 })
 headers = {
   'authority': 'api-gateway.apps.rankmyapp.com',
@@ -63,10 +68,12 @@ headers = {
 
 response = requests.request("POST", url, headers=headers, data=payload)
 
-if response.status_code != 200:
-    print('Erro na requisição')
+# if response.status_code != 200:
+#     print('Erro na requisição')
 
-token = response.json()['token']
+# token = response.json()['token']
+token = response.cookies.get_dict()['authService_production_token']
+cookies = response.cookies.get_dict()
 
 ######### appIds e AppNames #########
 appNameApple = ['Itaú Cartões (apple)','Cartão Luiza (apple)','Hipercard (apple)','Credicard (apple)','Credicard On (apple)',
@@ -151,14 +158,14 @@ if btn:
 		'sec-fetch-dest': 'empty',
 		'sec-fetch-mode': 'cors',
 		'sec-fetch-site': 'same-site',
-		'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36 Edg/105.0.1343.53'
+		'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36 Edg/105.0.1343.53',
+		'x-xsrf-token': cookies['XSRF-TOKEN']
 		}
 
-		response = requests.request("GET", url, headers=headers, data=payload)
+		response = requests.request("GET", url, headers=headers, data=payload, cookies=cookies)
 		if response.status_code == 504:
 			st.warning('Timeout: Diminua o período selecionado')
 		list_resquests.append(response.json())
-
 	if response.status_code == 400:
 		st.warning('O período selecionado é maior que 31 dias')
 	if response.status_code == 504:
@@ -223,20 +230,17 @@ if btn:
 		dfStatsFinal = dfStats[['appName','Text']].groupby('appName')['Text'].count().reset_index(name='Volume de Reviews')
 
 		df_cols['Name'] = df_cols['Name'].str.split('(').str[0]
+
+		
+
+
+		
+		
 		st.subheader('Resumo')
 		st.write(dfStatsFinal)
 		st.subheader('Prévia da Planilha')
 		st.write(df_cols)
 		st.write('Clique em Download para baixar o arquivo')
 		st.markdown(get_table_download_link(df_cols), unsafe_allow_html=True)
-
-
-
-
-
-
-
-
-
 
 
