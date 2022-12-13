@@ -44,10 +44,10 @@ st.write("")
 url = "https://api.rankmyapp.com/auth/auth/signin"
 payload = json.dumps({
   "name": "",
-  "email": 'joao.souza@rankmyapp.com.br',#st.secrets['tool_email'],
+  "email": st.secrets['tool_email'],
   "company": "",
   "occupation": "",
-  "password": 'JVictor@00' #st.secrets['tool_password']
+  "password": st.secrets['tool_password']
 })
 headers = {
   'authority': 'api-gateway.apps.rankmyapp.com',
