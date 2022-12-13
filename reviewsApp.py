@@ -9,21 +9,19 @@ import datetime
 import os
 import base64
 from io import BytesIO
+from PIL import Image
 def ignore_warn(*args, **kwargs):
     pass
 warnings.warn = ignore_warn
 
+rank = Image.open('rank_logo.png')
 
+st.set_page_config(page_title='MVP - Reviews Mútiplos Apps Para Itaú',page_icon=rank)
 # Função para transformar df em excel
 def to_excel(df):
 	output = BytesIO()
-
-	grouped_df = df.groupby('Name')
-	with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
-		for group in grouped_df.groups:
-			grouped_df.get_group(group).to_excel(writer, sheet_name=group)
-	
-	#df.to_excel(writer, sheet_name='Planilha1',index=False)
+	writer = pd.ExcelWriter(output, engine='xlsxwriter')
+	df.to_excel(writer, sheet_name='Planilha1',index=False)
 	writer.save()
 	processed_data = output.getvalue()
 	return processed_data
